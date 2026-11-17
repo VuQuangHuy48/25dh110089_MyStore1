@@ -1,0 +1,11 @@
+﻿@model _25dh110089_MyStore.Models.Order
+@{ ViewBag.Title = "Đặt hàng thành công"; }
+
+<div class="text-center mt-5">
+    <h1 class="text-success">🎉 ĐẶT HÀNG THÀNH CÔNG!</h1>
+    <h4 class="mt-3">Mã đơn hàng của bạn là: #@Model.OrderID</h4>
+    <p>Tổng tiền: <span class="text-danger font-weight-bold">@String.Format("{0:N0} đ", Model.TotalAmount)</span></p>
+    <p>Đơn hàng đang được xử lý và sẽ sớm giao đến bạn.</p>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">Quay về trang chủ</a>
+    <a href="@Url.Action("Index", "Order")" class="btn btn-outline-secondary mt-3">Xem lịch sử mua hàng</a>
+</div>

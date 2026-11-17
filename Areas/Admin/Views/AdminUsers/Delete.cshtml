@@ -1,0 +1,11 @@
+﻿@model _25dh110089_MyStore.Models.User
+@{ ViewBag.Title = "Xóa Admin"; }
+
+<h2>Xóa tài khoản Admin</h2>
+<h4 class="text-danger">Bạn có chắc muốn xóa tài khoản @Model.Username?</h4>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <input type="submit" value="Xóa" class="btn btn-danger" />
+    @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-default" })
+}

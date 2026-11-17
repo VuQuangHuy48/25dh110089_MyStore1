@@ -1,0 +1,25 @@
+﻿@model _25dh110089_MyStore.Models.Product
+@{ ViewBag.Title = "Chi tiết sản phẩm"; }
+
+<h2>Chi tiết sản phẩm</h2>
+<div class="row">
+    <div class="col-md-4">
+        <img src="~/Content/Images/@Model.ProductImage" class="img-fluid border p-1" onerror="this.src='https://via.placeholder.com/300?text=No+Image'" />
+    </div>
+    <div class="col-md-8">
+        <dl class="dl-horizontal">
+            <dt>Mã sản phẩm</dt>
+            <dd>@Model.ProductID</dd>
+            <dt>Tên sản phẩm</dt>
+            <dd>@Model.ProductName</dd>
+            <dt>Danh mục</dt>
+            <dd>@(Model.Category != null ? Model.Category.CategoryName : "")</dd>
+            <dt>Mô tả</dt>
+            <dd>@Model.ProductDescription</dd>
+            <dt>Giá bán</dt>
+            <dd class="text-danger font-weight-bold">@String.Format("{0:N0} đ", Model.ProductPrice)</dd>
+        </dl>
+        @Html.ActionLink("Sửa", "Edit", new { id = Model.ProductID }, new { @class = "btn btn-warning" })
+        @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-secondary" })
+    </div>
+</div>

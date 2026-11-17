@@ -1,0 +1,29 @@
+﻿@model IEnumerable<_25dh110089_MyStore.Models.OrderDetail>
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    var order = ViewBag.Order as _25dh110089_MyStore.Models.Order;
+}
+
+<h3>Chi tiết đơn hàng #@order.OrderID</h3>
+<p>Ngày đặt: @String.Format("{0:dd/MM/yyyy HH:mm}", order.OrderDate)</p>
+<p>Địa chỉ giao: @order.AddressDelivery</p>
+<hr />
+<table class="table table-bordered">
+    <tr class="bg-light">
+        <th>Sản phẩm</th>
+        <th>Đơn giá</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@(item.Product != null ? item.Product.ProductName : "")</td>
+            <td>@String.Format("{0:N0} đ", item.UnitPrice)</td>
+            <td>@item.Quantity</td>
+            <td class="text-danger font-weight-bold">@String.Format("{0:N0} đ", item.UnitPrice * item.Quantity)</td>
+        </tr>
+    }
+</table>
+<h4 class="text-end">Tổng cộng: <span class="text-danger">@String.Format("{0:N0} đ", order.TotalAmount)</span></h4>
+<a href="@Url.Action("Index")" class="btn btn-secondary">Quay lại</a>

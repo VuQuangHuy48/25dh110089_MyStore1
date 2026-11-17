@@ -1,0 +1,67 @@
+﻿@model IEnumerable<_25dh110089_MyStore.Models.Order>
+@{ ViewBag.Title = "Quản lý đơn hàng"; }
+
+<h2>DANH SÁCH ĐƠN HÀNG</h2>
+
+<form method="get" class="row g-3 mb-4 bg-light p-3 rounded">
+    <div class="col-md-3">
+        <label class="form-label">Tên khách hàng</label>
+        <input type="text" name="customerName" value="@ViewBag.CustomerName" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Trạng thái thanh toán</label>
+        <select name="status" class="form-select">
+            <option value="">-- Tất cả --</option>
+            <option value="Chưa thanh toán" @(ViewBag.Status == "Chưa thanh toán" ? "selected" : "")>Chưa thanh toán</option>
+            <option value="Đã thanh toán" @(ViewBag.Status == "Đã thanh toán" ? "selected" : "")>Đã thanh toán</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Ngày đặt hàng</label>
+        <input type="date" name="date" value="@ViewBag.Date" class="form-control" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <h4 class="text-danger text-center mt-5">KHÔNG CÓ</h4>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <tr class="bg-light">
+            <th>Ngày đặt hàng</th>
+            <th>Tên khách hàng</th>
+            <th>Tổng giá trị</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Thao tác</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@String.Format("{0:dd/MM/yyyy HH:mm}", item.OrderDate)</td>
+                <td>@(item.Customer != null ? item.Customer.CustomerName : "Khách vãng lai")</td>
+                <td class="text-danger">@String.Format("{0:N0} đ", item.TotalAmount)</td>
+                <td>@item.PaymentStatus</td>
+                <td>
+                    @Html.ActionLink("Chi tiết đơn hàng", "Details", new { id = item.OrderID })
+                </td>
+            </tr>
+        }
+    </table>
+
+    <!-- Phân trang -->
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                    @Html.ActionLink(i.ToString(), "Index", new { customerName = ViewBag.CustomerName, status = ViewBag.Status, date = ViewBag.Date, page = i }, new { @class = "page-link" })
+                </li>
+            }
+        </ul>
+    </nav>
+}

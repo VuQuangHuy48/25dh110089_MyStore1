@@ -1,0 +1,71 @@
+﻿@model IEnumerable<_25dh110089_MyStore.Models.Product>
+@{ ViewBag.Title = "Sản phẩm"; }
+
+<div class="row">
+    <!-- Cột bên trái: Bộ lọc -->
+    <div class="col-md-3">
+        <h4>Danh mục</h4>
+        <div class="list-group mb-4">
+            <a href="@Url.Action("Index", "Product")" class="list-group-item list-group-item-action @(ViewBag.CategoryId == null ? "active" : "")">Tất cả</a>
+            @foreach (var cat in (List<_25dh110089_MyStore.Models.Category>)ViewBag.Categories)
+            {
+                <a href="@Url.Action("Index", "Product", new { categoryId = cat.CategoryID })"
+                   class="list-group-item list-group-item-action @(ViewBag.CategoryId == cat.CategoryID ? "active" : "")">
+                    @cat.CategoryName
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Cột bên phải: Danh sách sản phẩm -->
+    <div class="col-md-9">
+        <!-- Form tìm kiếm & sắp xếp -->
+        <form method="get" action="@Url.Action("Index", "Product")" class="row g-2 mb-3">
+            <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
+            <div class="col-md-5">
+                <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Nhập tên sản phẩm..." />
+            </div>
+            <div class="col-md-4">
+                <select name="sort" class="form-select">
+                    <option value="">Sắp xếp mặc định</option>
+                    <option value="price_asc" @(ViewBag.Sort == "price_asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                    <option value="price_desc" @(ViewBag.Sort == "price_desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Lọc / Tìm</button>
+            </div>
+        </form>
+
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="~/Content/Images/@item.ProductImage" class="card-img-top p-2" style="height: 180px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/180?text=No+Image'" />
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title text-truncate" title="@item.ProductName">@item.ProductName</h6>
+                            <p class="card-text text-danger font-weight-bold mt-auto">@String.Format("{0:N0} đ", item.ProductPrice)</p>
+                            <a href="@Url.Action("Details", "Product", new { id = item.ProductID })" class="btn btn-sm btn-outline-primary w-100">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Phân trang -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { keyword = ViewBag.Keyword, categoryId = ViewBag.CategoryId, sort = ViewBag.Sort, page = i })">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

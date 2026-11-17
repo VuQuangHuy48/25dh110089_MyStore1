@@ -1,0 +1,85 @@
+﻿@model IEnumerable<_25dh110089_MyStore.Models.MyOrderViewModel>
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h3>Đơn hàng của tôi</h3>
+
+    <!-- Thanh Tabs Trạng thái (Giữ nguyên) -->
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item"><a class="nav-link active" href="@Url.Action("MyOrder", "Orders")">Tất cả đơn</a></li>
+        <li class="nav-item"><a class="nav-link" href="@Url.Action("MyOrder", "Orders", new { statusFilter = 0 })">Chờ thanh toán</a></li>
+        <!-- ... Các tab khác giữ nguyên ... -->
+    </ul>
+
+    <!-- Thanh Tìm kiếm (Giữ nguyên) -->
+    @using (Html.BeginForm("MyOrder", "Orders", FormMethod.Get, new { @class = "d-flex mb-4" }))
+    {
+        <input type="text" name="searchString" class="form-control me-2" placeholder="Tìm đơn hàng..." />
+        <button type="submit" class="btn btn-primary">Tìm đơn hàng</button>
+    }
+
+    <div id="order-list-container">
+        @if (!Model.Any())
+        {
+            <div class="text-center mt-5">
+                <h5>BẠN CHƯA CÓ ĐƠN HÀNG NÀO. HÃY ĐẶT ĐƠN NGAY.</h5>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-success mt-2">Về trang chủ mua sắm</a>
+            </div>
+        }
+        else
+        {
+            // Chỉ hiển thị 2 đơn hàng đầu tiên bằng Partial View
+            @Html.Partial("_OrderItemPartial", Model.Take(2))
+        }
+    </div>
+
+    <!-- Nút Xem Thêm (Chỉ hiện nếu có hơn 2 đơn) -->
+    @if (Model.Count() > 2)
+    {
+        <div class="text-center mb-4 mt-3" id="load-more-container">
+            <button id="btn-load-more" class="btn btn-outline-secondary">Xem thêm</button>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var skipCount = 2; // Đã hiển thị 2 đơn ban đầu
+            var maxOrders = 50; // Tối đa 50 đơn như yêu cầu slide
+
+            $("#btn-load-more").click(function () {
+                // Nếu đã hiển thị đủ 50 đơn thì ẩn nút đi
+                if (skipCount >= maxOrders) {
+                    $("#btn-load-more").hide();
+                    return;
+                }
+
+                 $.ajax({
+                    url: '@Url.Action("_OrderItemPartial", "Orders")',
+                    type: 'GET',
+                    data: { skipCount: skipCount },
+                    success: function (result) {
+                        // Nối thêm HTML mới vào danh sách
+                        $("#order-list-container").append(result);
+
+                        // Tăng số lượng đã hiển thị lên 2 (vì mỗi lần gọi lấy 2 đơn)
+                        skipCount += 2;
+
+                        // Nếu đã đạt tối đa 50 đơn thì ẩn nút đi
+                        if (skipCount >= maxOrders) {
+                            $("#btn-load-more").hide();
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra khi tải thêm đơn hàng.");
+                    }
+                });
+            });
+        });
+    </script>
+}

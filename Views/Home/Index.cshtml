@@ -1,0 +1,19 @@
+﻿@model IEnumerable<_25dh110089_MyStore.Models.Product>
+@{ ViewBag.Title = "Trang chủ"; }
+
+<h2 class="mb-4">Sản phẩm mới nhất</h2>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="~/Content/Images/@item.ProductImage" class="card-img-top p-2" style="height: 200px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                <div class="card-body">
+                    <h5 class="card-title text-truncate" title="@item.ProductName">@item.ProductName</h5>
+                    <p class="card-text text-danger font-weight-bold">@String.Format("{0:N0} đ", item.ProductPrice)</p>
+                    <a href="@Url.Action("Details", "Product", new { id = item.ProductID })" class="btn btn-outline-primary w-100">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
